@@ -27,5 +27,14 @@ The minimum prerequisites to run this sample are:
 
 ## Results
 
+![Demo](readme_images/demo.gif)
 
+## More Information
+
+To get more information about how to get started, please review the following resources:
+* [IBM Bluemix](https://www.ibm.com/cloud-computing/bluemix/)
+* [Watson Developer Cloud](https://www.ibm.com/watson/developer/)
+* [Watson Conversation](https://www.ibm.com/watson/services/conversation/)
+* [Microsoft Bot Builder for Node.js Reference](https://docs.microsoft.com/en-us/bot-framework/nodejs/)
+* [Bot Framework FAQ](https://docs.microsoft.com/en-us/bot-framework/resources-bot-framework-faq#i-have-a-communication-channel-id-like-to-be-configurable-with-bot-framework-can-i-work-with-microsoft-to-do-that)
 
