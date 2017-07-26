@@ -18,7 +18,10 @@ Why using Microsoft Bot Framework & IBM Watson : **Openess**
 
 The minimum prerequisites to run this sample are:
 * Create a Bluemix account & a Watson Conversation Workspace
-    * In case, you don't have it : [Sign up](https://console.ng.bluemix.net/registration/?target=/catalog/%3fcategory=watson) in Bluemix, or use an existing account and follow the instruction of that sample for the [Watson Conversation](https://github.com/watson-developer-cloud/conversation-simple) design.
+    * In case, you don't have it : [Sign up](https://console.ng.bluemix.net/registration/?target=/catalog/%3fcategory=watson) in Bluemix, or use an existing account
+$ Acquire Watson Conversation credentials
+
+   * The code needs you to provide the username, password, and workspace_id of your Watson Conversation chat bot. If you have an existing Conversation service instance, [follow these steps](https://github.com/watson-developer-cloud/conversation-simple/blob/master/README.md#configuring-the-application-environmnet) to get your credentials. If you do not have a Conversation service instance, [follow these steps](https://github.com/watson-developer-cloud/conversation-simple/blob/master/README.md#before-you-begin) to get started.
     
 * Latest Node.js with NPM. Download it from [here](https://nodejs.org/en/download/).
 * The [Cloud Foundry][cloud_foundry] command-line client
