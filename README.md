@@ -25,7 +25,74 @@ The minimum prerequisites to run this sample are:
 
       Note: Ensure that you Cloud Foundry version is up to date
 * The Bot Framework Emulator. To install the Bot Framework Emulator, download it from [here](https://emulator.botframework.com/). Please refer to [this documentation article](https://github.com/microsoft/botframework-emulator/wiki/Getting-Started) to know more about the Bot Framework Emulator.
-* Register your bot with the Microsoft Bot Framework. Please refer to [this](https://docs.microsoft.com/en-us/bot-framework/portal-register-bot) for the instructions. Once you complete the registration, update your bot configuration with the registered config values (See [Debugging locally using ngrok](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator) or [Deploying to IBM Bluemix](https://console.bluemix.net/docs/runtimes/nodejs/getting-started.html#getting-started-with-node-js-on-bluemix)
+* Register your bot with the Microsoft Bot Framework. Please refer to [this](https://docs.microsoft.com/en-us/bot-framework/portal-register-bot) for the instructions. Once you complete the registration, update your bot configuration with the registered config values (See [Debugging locally using ngrok](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator) or [Deploying to IBM Bluemix](https://console.bluemix.net/docs/runtimes/nodejs/getting-started.html#getting-started-with-node-js-on-bluemix))
+
+## Instructions
+
+* Copy or rename the .env_example file to .env (nothing before the dot) and add your Watson conversations details and Microsoft Bot app keys.
+
+```
+# Environment variables
+WORKSPACE_ID=
+CONVERSATION_USERNAME=
+CONVERSATION_PASSWORD=
+#Microsoft Bot Info
+appId=
+appPassword=
+```
+
+* Before deploying that code, I recommend you fork it to test it locally with BotFramework emulator.
+
+![botframework](readme_images/framework.png)
+
+## Code Explanation
+
+Watson Conversation Node.js code :
+I retrieve the Bot session message, pass that message to Watson Conversation, retrieve the response and send back the response to Bot session.
+
+```Javascript
+var bot = new builder.UniversalBot(connector, function (session) {
+
+    var payload = {
+        workspace_id: workspace,
+        context:'',
+        input: { text: session.message.text}
+    };
+
+   // I use the Bot Conversation Id as identifier.
+    var conversationContext = findOrCreateContext(session.message.address.conversation.id);	
+    if (!conversationContext) conversationContext = {};
+    payload.context = conversationContext.watsonContext;
+
+    conversation.message(payload, function(err, response) {
+     if (err) {
+       session.send(err);
+     } else {
+       console.log(JSON.stringify(response, null, 2));
+       session.send(response.output.text);
+       conversationContext.watsonContext = response.context;
+     }
+    });
+
+});
+```
+
+I have a specific function to handle the conversation context.
+```Javascript
+function findOrCreateContext (convId){
+      // Let's see if we already have a session for the user convId
+    if (!contexts)
+        contexts = [];
+        
+    if (!contexts[convId]) {
+        // No session found for user convId, let's create a new one
+        //with Michelin concervsation workspace by default
+        contexts[convId] = {workspaceId: workspace, watsonContext: {}};
+        //console.log ("new session : " + convId);
+    }
+return contexts[convId];
+}
+```
 
 ## Results
 
