@@ -2,6 +2,8 @@
 
 A sample bot using Microsoft Bot framework as communication channel support and IBM Watson Conversation
 
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/vperrinfr/Cortana-Watson)
+
 ## Introduction
 
 The Microsoft Bot Framework provides just what you need to build and connect intelligent bots that interact naturally wherever your users are talking, from text/sms to Skype, Slack, Office 365 mail and other popular services. [More details](https://dev.botframework.com/)
@@ -27,7 +29,14 @@ The minimum prerequisites to run this sample are:
 
 ## Results
 
-![Demo](readme_images/demo.gif)
+Channels supported by Bot Framework
+![Channels](readme_images/channels.png)
+
+My bot tested with Bot Framework test client
+![Test Client in Bot Framework](readme_images/test.png)
+
+My conversation with Watson via Microsoft Skype
+![Skype](readme_images/skype.png)
 
 ## More Information
 
