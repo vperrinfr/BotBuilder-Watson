@@ -41,7 +41,7 @@ appId=
 appPassword=
 ```
 
-* Before deploying that code, I recommend you fork it to test it locally with BotFramework emulator.
+* Before deploying that code, I recommend you fork it to test it locally with BotFramework emulator. [more details](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator)
 
 ![botframework](readme_images/framework.png)
 
