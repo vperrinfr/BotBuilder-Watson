@@ -38,6 +38,9 @@ var conversation = new Conversation({
   url: 'https://gateway.watsonplatform.net/conversation/api',
   version_date: Conversation.VERSION_DATE_2017_04_21
 });
+console.log("process.env.WORKSPACE_ID "+ process.env.WORKSPACE_ID); 
+console.log("process.env.appID "+ process.env.appId); 
+console.log("process.env.appPassword "+ process.env.appPassword); 
 
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
@@ -50,7 +53,7 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
-console.log("ID client "+ session.message.address.conversation.id);
+//console.log("ID client "+ session.message.address.conversation.id);
 console.log(JSON.stringify(session.message, null, 2));
 
     var payload = {
