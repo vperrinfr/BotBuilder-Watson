@@ -17,11 +17,12 @@
   },
   "dependencies": {
     "node-pre-gyp": "^0.13.0",
-    "botbuilder": "^4.4.0",
-    "dotenv": "^8.0.0",
-    "osa-imessage": "^2.4.2",
-    "restify": "^8.3.3",
     "sqlite3": "^4.0.8",
-    "watson-developer-cloud": "^4.0.1"
+    "botbuilder": "^3.8.4",
+    "botbuilder": "^3.8.4",
+    "dotenv": "^2.0.0",
+    "osa-imessage": "^2.1.1",
+    "restify": "^5.0.1",
+    "watson-developer-cloud": "^2.31.1"
   }
 }
