@@ -6,3 +6,4 @@ applications:
   name: cortana-bot
   host: cortana-bot
   disk_quota: 1024M
+  buildpack: sdk-for-nodejs
