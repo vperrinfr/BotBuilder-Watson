@@ -53,7 +53,7 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
-//console.log("ID client "+ session.message.address.conversation.id);
+console.log("ID client "+ session.message.address.conversation.id);
 console.log(JSON.stringify(session.message, null, 2));
 
     var payload = {
@@ -91,3 +91,8 @@ function findOrCreateContext (convId){
     }
 return contexts[convId];
 }
+
+server.get(/\/?.*/, restify.plugins.serveStatic({
+  directory: './images',
+  default: 'Picture1.png'
+}))
