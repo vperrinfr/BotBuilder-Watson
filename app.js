@@ -57,13 +57,15 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 });
 
 // Create the service wrapper
-var workspace=process.env.WORKSPACE_ID || '';
+var workspace = process.env.WORKSPACE_ID || '';
+var conv_url = process.env.CONVERSATION_URL || 'https://gateway.watsonplatform.net/assistant/api/';
+
 var conversation = new Conversation({
   // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
   // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
   // username: '<username>',
   // password: '<password>',
-  url: 'https://gateway.watsonplatform.net/conversation/api',
+  url: conv_url,
   version_date: Conversation.VERSION_DATE_2017_04_21
 });
 console.log("process.env.WORKSPACE_ID "+ process.env.WORKSPACE_ID); 
