@@ -5,10 +5,20 @@
   "scripts": {
     "start": "node app.js"
   },
+  "config": {
+    "unsafe-perm": true
+  },
   "author": "Vincent Perrin",
   "license": "ISC",
   "description": "",
+  "engines": {
+    "node": ">= 10.x.x",
+    "npm": "> 6.x.x"
+  },
   "dependencies": {
+    "node-pre-gyp": "^0.13.0",
+    "sqlite3": "^4.0.8",
+    "botbuilder": "^3.8.4",
     "botbuilder": "^3.8.4",
     "dotenv": "^2.0.0",
     "osa-imessage": "^2.1.1",
