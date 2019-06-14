@@ -22,9 +22,19 @@ require('dotenv').config({silent: true});
 
 // set up Azure storegae for the bot
 var azure = require('botbuilder-azure'); 
+
+// storageKey is a required psrameter in the environmenty
+var storageKey=process.env.storageKey;
+if (storageKey) {
+  console.log("process.env.storageKey "+ process.env.storageKey); 
+} else {
+  console.error('storageKey must be specified in environment');
+  process.exit(1);
+}
+
 var documentDbOptions = {
   host: 'https://coca-cola.documents.azure.com:443/', 
-  masterKey: '1mn4CMC9KYTRg7Fgtw1X21JJu64MoqRbGgauGTiebyzspWSR12C993rk07w9LVg6o8BPlLS9JWH4Ro4x7Dkb0g==', 
+  masterKey: storageKey, 
   database: 'botdocs',   
   collection: 'botdata'
 };
