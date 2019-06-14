@@ -23,7 +23,7 @@ require('dotenv').config({silent: true});
 // set up Azure storegae for the bot
 var azure = require('botbuilder-azure'); 
 
-// storageKey is a required psrameter in the environmenty
+// storageKey and storageURL are required psrameters in the environment
 var storageKey=process.env.storageKey;
 if (storageKey) {
   console.log("process.env.storageKey "+ process.env.storageKey); 
@@ -31,9 +31,16 @@ if (storageKey) {
   console.error('storageKey must be specified in environment');
   process.exit(1);
 }
+var storageURL=process.env.storageURL;
+if (storageURL) {
+  console.log("process.env.storageURL "+ process.env.storageURL); 
+} else {
+  console.error('storageURL must be specified in environment');
+  process.exit(1);
+}
 
 var documentDbOptions = {
-  host: 'https://coca-cola.documents.azure.com:443/', 
+  host: storageURL, 
   masterKey: storageKey, 
   database: 'botdocs',   
   collection: 'botdata'
@@ -74,8 +81,8 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
-    console.log("ID client "+ session.message.address.conversation.id);
-    console.log(JSON.stringify(session.message, null, 2));
+    console.log("conversation ID "+ session.message.address.conversation.id);
+    console.log("Message detail:\n"+JSON.stringify(session.message, null, 2));
 
     var payload = {
         workspace_id: workspace,
@@ -90,8 +97,9 @@ var bot = new builder.UniversalBot(connector, function (session) {
     conversation.message(payload, function(err, response) {
      if (err) {
        session.send(err);
+       console.error(err);
      } else {
-       console.log(JSON.stringify(response, null, 2));
+       console.log("Response:\n"+JSON.stringify(response, null, 2));
        session.send(response.output.text);
        conversationContext.watsonContext = response.context;
      }
