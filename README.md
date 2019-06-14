@@ -27,6 +27,13 @@ $ Acquire Watson Conversation credentials
 * The [Cloud Foundry][cloud_foundry] command-line client
 
       Note: Ensure that you Cloud Foundry version is up to date
+
+  ```
+  Note: When pushing to cloud foundry you must explicitly specify what buildpack to use i.e. 
+
+  cf push -b https://github.com/cloudfoundry/nodejs-buildpack
+  ```
+
 * The Bot Framework Emulator. To install the Bot Framework Emulator, download it from [here](https://emulator.botframework.com/). Please refer to [this documentation article](https://github.com/microsoft/botframework-emulator/wiki/Getting-Started) to know more about the Bot Framework Emulator.
 * Register your bot with the Microsoft Bot Framework. Please refer to [this](https://docs.microsoft.com/en-us/bot-framework/portal-register-bot) for the instructions. Once you complete the registration, update your bot configuration with the registered config values (See [Debugging locally using ngrok](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator) or [Deploying to IBM Bluemix](https://console.bluemix.net/docs/runtimes/nodejs/getting-started.html#getting-started-with-node-js-on-bluemix))
 
