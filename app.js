@@ -20,8 +20,18 @@ var Conversation = require('watson-developer-cloud/conversation/v1'); // watson 
 
 require('dotenv').config({silent: true});
 
-var contexts;
-var workspace=process.env.WORKSPACE_ID || '';
+// set up Azure storegae for the bot
+var azure = require('botbuilder-azure'); 
+var documentDbOptions = {
+  host: 'https://coca-cola.documents.azure.com:443/', 
+  masterKey: '1mn4CMC9KYTRg7Fgtw1X21JJu64MoqRbGgauGTiebyzspWSR12C993rk07w9LVg6o8BPlLS9JWH4Ro4x7Dkb0g==', 
+  database: 'botdocs',   
+  collection: 'botdata'
+};
+
+var docDbClient = new azure.DocumentDbClient(documentDbOptions);
+
+var cosmosStorage = new azure.AzureBotStorage({ gzipData: false }, docDbClient);
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -30,6 +40,7 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 });
 
 // Create the service wrapper
+var workspace=process.env.WORKSPACE_ID || '';
 var conversation = new Conversation({
   // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
   // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
@@ -53,8 +64,8 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
-console.log("ID client "+ session.message.address.conversation.id);
-console.log(JSON.stringify(session.message, null, 2));
+    console.log("ID client "+ session.message.address.conversation.id);
+    console.log(JSON.stringify(session.message, null, 2));
 
     var payload = {
         workspace_id: workspace,
@@ -76,8 +87,9 @@ console.log(JSON.stringify(session.message, null, 2));
      }
     });
 
-});
+}).set('storage', cosmosStorage);
 
+var contexts;
 function findOrCreateContext (convId){
       // Let's see if we already have a session for the user convId
     if (!contexts)
@@ -85,9 +97,8 @@ function findOrCreateContext (convId){
         
     if (!contexts[convId]) {
         // No session found for user convId, let's create a new one
-        //with Michelin concervsation workspace by default
         contexts[convId] = {workspaceId: workspace, watsonContext: {}};
-        //console.log ("new session : " + convId);
+        console.log ("new session : " + convId);
     }
 return contexts[convId];
 }
