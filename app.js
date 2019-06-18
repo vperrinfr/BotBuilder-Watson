@@ -86,6 +86,19 @@ var bot = new builder.UniversalBot(connector, function (session) {
     console.log("conversation ID "+ session.message.address.conversation.id);
     console.log("Message detail:\n"+JSON.stringify(session.message, null, 2));
 
+    if (2048<session.message.text.length) {
+      console.warn('Message length is too long '+session.message.text.length+' truncate to 2048')
+      session.message.text = session.message.text.substring(0, 2047)
+    }
+
+    var regex = /[\t\n\r]/g
+    if (null != (bad_chars = session.message.text.match(regex))) {
+      console.warn('Input contans bad characters', bad_chars);
+      session.message.text = session.message.text.replace(regex, " ")
+    // } else {
+    //   console.log('No illegal characters in the input: '+session.message.text)
+    }
+
     var payload = {
         workspace_id: workspace,
         context:'',
@@ -98,8 +111,8 @@ var bot = new builder.UniversalBot(connector, function (session) {
 
     conversation.message(payload, function(err, response) {
      if (err) {
-       session.send(err);
-       console.error(err);
+      console.error(err);
+      session.send("ERROR: "+err.message);
      } else {
        console.log("Response:\n"+JSON.stringify(response, null, 2));
        session.send(response.output.text);
