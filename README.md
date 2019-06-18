@@ -39,11 +39,13 @@ $ Acquire Watson Conversation credentials
 
 * Set up your Azure storage with the following steps.
   * Create an Azure account if you dod not already have one. This should be the account that you used for creating your bot
+  * Create a CosmoDB database inside that account named _botdocs_  
+  ![screenshot_new_db](readme_images/screenshot_new_db.png) 
+  * Inside that database, create a collection named _botdata_ make sure that the partition key is _id_
+  ![screenshot_add_container](readme_images/screenshot_add_container.png) 
+  * Make a note of the _PRIMARY KEY_ associated with your account. This must be stored in the environment file as _storageKey_
   * Take note of the URI associated with your bot account, It will be something like :
 https://<bot_name>.documents.azure.com:443/ - this will be the _storageURL_ you will save in your environment file below.
-  * Create a CosmoDB database inside that account named _botdocs_   
-  * Inside that database, create a collection named _botdata_ make sure that the partition key is _id_
-  * Make a note of the _PRIMARY KEY_ associated with your account. This must be stored in the environment file as _storageKey_
 
 ## Instructions
 
