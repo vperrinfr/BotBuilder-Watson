@@ -134,8 +134,10 @@ function findOrCreateContext (convId){
         
     if (!contexts[convId]) {
         // No session found for user convId, let's create a new one
-        contexts[convId] = {workspaceId: workspace, watsonContext: {}};
-        console.log ("new session : " + convId);
+        contexts[convId] = {workspaceId: workspace, watsonContext: {'client_type': 'MS_Teams'}};
+        console.log('Creating a new context structure for conversation '+ convId);
+    } else {
+      console.log("Reusing Context:\n"+JSON.stringify(contexts[convId], null, 2));
     }
 return contexts[convId];
 }
