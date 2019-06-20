@@ -145,8 +145,3 @@ function findOrCreateContext (convId){
     }
 return contexts[convId];
 }
-
-server.get(/\/?.*/, restify.plugins.serveStatic({
-  directory: './images',
-  default: 'Picture1.png'
-}))
