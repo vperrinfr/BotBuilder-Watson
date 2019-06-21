@@ -20,8 +20,35 @@ var Conversation = require('watson-developer-cloud/conversation/v1'); // watson 
 
 require('dotenv').config({silent: true});
 
-var contexts;
-var workspace=process.env.WORKSPACE_ID || '';
+// set up Azure storegae for the bot
+var azure = require('botbuilder-azure'); 
+
+// storageKey and storageURL are required psrameters in the environment
+var storageKey=process.env.storageKey;
+if (storageKey) {
+  console.log("process.env.storageKey "+ process.env.storageKey); 
+} else {
+  console.error('storageKey must be specified in environment');
+  process.exit(1);
+}
+var storageURL=process.env.storageURL;
+if (storageURL) {
+  console.log("process.env.storageURL "+ process.env.storageURL); 
+} else {
+  console.error('storageURL must be specified in environment');
+  process.exit(1);
+}
+
+var documentDbOptions = {
+  host: storageURL, 
+  masterKey: storageKey, 
+  database: 'botdocs',   
+  collection: 'botdata'
+};
+
+var contexts= [];
+var docDbClient = new azure.DocumentDbClient(documentDbOptions);
+var cosmosStorage = new azure.AzureBotStorage({ gzipData: false }, docDbClient);
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -30,12 +57,15 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 });
 
 // Create the service wrapper
+var workspace = process.env.WORKSPACE_ID || '';
+var conv_url = process.env.CONVERSATION_URL || 'https://gateway.watsonplatform.net/assistant/api/';
+
 var conversation = new Conversation({
   // If unspecified here, the CONVERSATION_USERNAME and CONVERSATION_PASSWORD env properties will be checked
   // After that, the SDK will fall back to the bluemix-provided VCAP_SERVICES environment property
   // username: '<username>',
   // password: '<password>',
-  url: 'https://gateway.watsonplatform.net/conversation/api',
+  url: conv_url,
   version_date: Conversation.VERSION_DATE_2017_04_21
 });
 console.log("process.env.WORKSPACE_ID "+ process.env.WORKSPACE_ID); 
@@ -53,8 +83,21 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
-console.log("ID client "+ session.message.address.conversation.id);
-console.log(JSON.stringify(session.message, null, 2));
+    console.log("conversation ID "+ session.message.address.conversation.id);
+    console.log("Message detail:\n"+JSON.stringify(session.message, null, 2));
+
+    if (2048<session.message.text.length) {
+      console.warn('Message length is too long '+session.message.text.length+' truncate to 2048');
+      session.message.text = session.message.text.substring(0, 2047)
+    }
+
+    var regex = /[\t\n\r]/g
+    if (null != (bad_chars = session.message.text.match(regex))) {
+      console.warn('Input contans bad characters', bad_chars);
+      session.message.text = session.message.text.replace(regex, " ");
+    // } else {
+    //   console.log('No illegal characters in the input: '+session.message.text);
+    }
 
     var payload = {
         workspace_id: workspace,
@@ -62,37 +105,43 @@ console.log(JSON.stringify(session.message, null, 2));
         input: { text: session.message.text}
     };
 
+    // If the user asked us to start over create a new context
+    if ((session.message.text.toLowerCase() == 'start over') || (session.message.text.toLowerCase() == 'start_over')) {
+      var convId = ession.message.address.conversation.id;
+      console.log('Starting a new Conversation for '+convId);
+      if (contexts[convId]) 
+        delete contexts[convId];
+    }
+  
     var conversationContext = findOrCreateContext(session.message.address.conversation.id);	
     if (!conversationContext) conversationContext = {};
     payload.context = conversationContext.watsonContext;
 
     conversation.message(payload, function(err, response) {
      if (err) {
-       session.send(err);
+      console.error(err);
+      session.send("ERROR: "+err.message);
      } else {
-       console.log(JSON.stringify(response, null, 2));
-       session.send(response.output.text);
+       console.log("Response:\n"+JSON.stringify(response, null, 2));
+       response.output.text.forEach(function(line) {
+         console.log('Sending: '+line);
+         session.send(line);
+       });
+      //  session.send(response.output.text);
        conversationContext.watsonContext = response.context;
      }
     });
 
-});
+}).set('storage', cosmosStorage);
 
 function findOrCreateContext (convId){
       // Let's see if we already have a session for the user convId
-    if (!contexts)
-        contexts = [];
-        
     if (!contexts[convId]) {
         // No session found for user convId, let's create a new one
-        //with Michelin concervsation workspace by default
-        contexts[convId] = {workspaceId: workspace, watsonContext: {}};
-        //console.log ("new session : " + convId);
+        contexts[convId] = {workspaceId: workspace, watsonContext: {'client_type': 'MS_Teams'}};
+        console.log('Creating a new context structure for conversation '+ convId);
+    } else {
+      console.log("Reusing Context:\n"+JSON.stringify(contexts[convId], null, 2));
     }
 return contexts[convId];
 }
-
-server.get(/\/?.*/, restify.plugins.serveStatic({
-  directory: './images',
-  default: 'Picture1.png'
-}))

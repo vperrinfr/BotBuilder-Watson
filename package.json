@@ -18,8 +18,8 @@
   "dependencies": {
     "node-pre-gyp": "^0.13.0",
     "sqlite3": "^4.0.8",
-    "botbuilder": "^3.8.4",
-    "botbuilder": "^3.8.4",
+    "botbuilder": "^3.13.1",
+    "botbuilder-azure": "^3.0.4",
     "dotenv": "^2.0.0",
     "osa-imessage": "^2.1.1",
     "restify": "^5.0.1",

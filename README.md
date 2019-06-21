@@ -27,8 +27,25 @@ $ Acquire Watson Conversation credentials
 * The [Cloud Foundry][cloud_foundry] command-line client
 
       Note: Ensure that you Cloud Foundry version is up to date
+
+  ```
+  Note: When pushing to cloud foundry you must explicitly specify what buildpack to use i.e. 
+
+  cf push -b https://github.com/cloudfoundry/nodejs-buildpack
+  ```
+
 * The Bot Framework Emulator. To install the Bot Framework Emulator, download it from [here](https://emulator.botframework.com/). Please refer to [this documentation article](https://github.com/microsoft/botframework-emulator/wiki/Getting-Started) to know more about the Bot Framework Emulator.
 * Register your bot with the Microsoft Bot Framework. Please refer to [this](https://docs.microsoft.com/en-us/bot-framework/portal-register-bot) for the instructions. Once you complete the registration, update your bot configuration with the registered config values (See [Debugging locally using ngrok](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator) or [Deploying to IBM Bluemix](https://console.bluemix.net/docs/runtimes/nodejs/getting-started.html#getting-started-with-node-js-on-bluemix))
+
+* Set up your Azure storage with the following steps.
+  * Create an Azure account if you dod not already have one. This should be the account that you used for creating your bot
+  * Create a CosmoDB database inside that account named _botdocs_  
+  ![screenshot_new_db](readme_images/screenshot_new_db.png) 
+  * Inside that database, create a collection named _botdata_ make sure that the partition key is _id_
+  ![screenshot_add_container](readme_images/screenshot_add_container.png) 
+  * Make a note of the _PRIMARY KEY_ associated with your account. This must be stored in the environment file as _storageKey_
+  * Take note of the URI associated with your bot account, It will be something like :
+https://<bot_name>.documents.azure.com:443/ - this will be the _storageURL_ you will save in your environment file below.
 
 ## Instructions
 
@@ -42,6 +59,8 @@ CONVERSATION_PASSWORD=
 #Microsoft Bot Info
 appId=
 appPassword=
+storageKey=
+storageURL=
 ```
 
 * Before deploying that code, I recommend you fork it to test it locally with BotFramework emulator. [more details](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator)
